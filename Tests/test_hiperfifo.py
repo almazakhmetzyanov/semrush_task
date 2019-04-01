@@ -7,7 +7,7 @@ expected_headers = ['custom_header_one: custom_header_content_one. QWEQRYT!@#%^&
                     'custom_header_two: custom_header_content_two. QWEQRYT!@#%^&*( 123',
                     'custom_header_three: custom_header_content_three. QWEQRYT!@#%^&*( 123']
 
-expected_headers_data = json.dumps({"custom_header_one": "custom_header_content_one. QWEQRYT!@#%^&*( 123",
+expected_headers_json = json.dumps({"custom_header_one": "custom_header_content_one. QWEQRYT!@#%^&*( 123",
                                     "custom_header_two": "custom_header_content_two. QWEQRYT!@#%^&*( 123",
                                     "custom_header_three": "custom_header_content_three. QWEQRYT!@#%^&*( 123"})
 
@@ -16,12 +16,12 @@ class TestHiperfifo(BaseTest):
     def test_hiperfifo_headers_validation(self):
         """
         1) Скармливаем вспомогательной апишке хедеры которые хотим увидеть в логе hiperfifo
-        1) Отправляем запрос через fifo
-        2) Достаем из логов нужные нам хедеры
-        3) Проверяем найденные хедеры
+        2) Отправляем запрос через fifo
+        3) Достаем из логов нужные нам хедеры
+        4) Проверяем найденные хедеры
         """
         url = '{}/get_custom_header/url'.format(self.base_url)
-        resp = self.http_client.send_post_request(url=url, data=expected_headers_data)
+        resp = self.http_client.send_post_request(url=url, data=expected_headers_json)
         assert resp.status_code == 200, 'Wrong response status from {}'
 
         self.send_request_with_hiperfifo(url=url)
@@ -34,8 +34,14 @@ class TestHiperfifo(BaseTest):
     @pytest.mark.parametrize('url_suffix, is_success', [('a' * 983, True),
                                                         ('a' * 984, False)])
     def test_hiperfifo_urls_length(self, url_suffix, is_success):
+        """
+        1) Скармливаем вспомогательной апишке хедеры которые хотим увидеть в логе hiperfifo
+        2) Отправляем запрос через fifo
+        3) Достаем из логов нужные нам хедеры
+        4) Проверяем найденные хедеры, либо их отсутствие
+        """
         url = '{}/get_custom_header/{}'.format(self.base_url, url_suffix)
-        resp = self.http_client.send_post_request(url=url, data=expected_headers_data)
+        resp = self.http_client.send_post_request(url=url, data=expected_headers_json)
         assert resp.status_code == 200, 'Wrong response status from {}'
 
         self.send_request_with_hiperfifo(url=url)
@@ -53,8 +59,14 @@ class TestHiperfifo(BaseTest):
                                             'search?q=dqwefqew',
                                             'search\?country=123123\?per_page=40\&allo=allo'])
     def test_hiperfifo_with_different_url_types(self, url_suffix):
+        """
+        1) Скармливаем вспомогательной апишке хедеры которые хотим увидеть в логе hiperfifo
+        2) Отправляем запрос через fifo
+        3) Достаем из логов нужные нам хедеры
+        4) Проверяем найденные хедеры
+        """
         url = '{}/get_custom_header/{}'.format(self.base_url, url_suffix)
-        resp = self.http_client.send_post_request(url=url, data=expected_headers_data)
+        resp = self.http_client.send_post_request(url=url, data=expected_headers_json)
         assert resp.status_code == 200, 'Wrong response status from {}'
 
         self.send_request_with_hiperfifo(url=url)

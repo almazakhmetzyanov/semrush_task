@@ -16,6 +16,7 @@ class BaseTest:
 
     @classmethod
     def setup_method(cls):
+        # чистим файлик с логами перед началом тестов
         open(tests_config.HIPERFIFO_LOG_FILE_PATH, 'w').close()
         pass
 
